@@ -1,21 +1,21 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 import os
 
-MYSQL_HOST = os.getenv("MYSQL_HOST", "localhost")
-MYSQL_USER = os.getenv("MYSQL_USER", "rodelsoft")
-MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "RodelS0ft3566#")
-MYSQL_DB = os.getenv("MYSQL_DB", "rodel_vita")
+DB_USER = os.getenv("DB_USER", "rodelsoft")
+DB_PASS = os.getenv("DB_PASS", "RodelS0ft3566#")
+DB_HOST = os.getenv("DB_HOST", "host.docker.internal")
+DB_NAME = os.getenv("DB_NAME", "rodel_vita")
 
-# ⚡ Deshabilitamos SSL en pymysql
-DATABASE_URL = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DB}?ssl_disabled=true"
+SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}?ssl_disabled=true"
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-# 👉 ESTA ES LA FUNCIÓN QUE FALTABA
+# Dependency
 def get_db():
     db = SessionLocal()
     try:
