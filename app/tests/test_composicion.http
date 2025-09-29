@@ -1,0 +1,65 @@
+### Crear un especialista
+POST http://localhost:8001/especialistas/
+Content-Type: application/json
+
+{
+  "nombre": "Carlar",
+  "apellido": "López",
+  "email": "carlar.lopez@vita.com",
+  "telefono": "555-222-3333",
+  "especialidad": "Nutrición"
+}
+
+### Crear un paciente
+POST http://localhost:8001/pacientes/
+Content-Type: application/json
+
+{
+  "id_especialista": 1,
+  "nombre": "Luis",
+  "apellido": "Martínez",
+  "fecha_nacimiento": "1990-05-14",
+  "sexo": "M",
+  "telefono": "555-111-0000",
+  "email": "luis.martinez@example.com"
+}
+
+### Crear una cita
+POST http://localhost:8001/citas/
+Content-Type: application/json
+
+{
+  "id_paciente": 1,
+  "fecha": "2025-09-29T10:30:00",
+  "peso": 82.0,
+  "altura": 1.70,
+  "imc": 26.5,
+  "glucosa": 110.0,
+  "observaciones": "Seguimiento mensual"
+}
+
+### Agregar composición corporal
+POST http://localhost:8001/composiciones/
+Content-Type: application/json
+
+{
+  "id_cita": 1,
+  "masa_grasa": 22.1,
+  "masa_muscular": 36.0,
+  "agua_corporal": 41.5,
+  "metabolismo_basal": 1650.0
+}
+
+### Agregar mediciones antropométricas
+POST http://localhost:8001/mediciones/
+Content-Type: application/json
+
+{
+  "id_cita": 1,
+  "cintura": 92.0,
+  "cadera": 102.0,
+  "brazo": 33.0
+}
+
+### Consultar citas con composiciones y mediciones
+GET http://localhost:8001/citas/1

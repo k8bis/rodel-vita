@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 import models, schemas, database
 
-router = APIRouter(prefix="/pacientes", tags=["Pacientes"])
+router = APIRouter()
 
 @router.post("/", response_model=schemas.Paciente)
 def create_paciente(request: schemas.PacienteCreate, db: Session = Depends(database.get_db)):

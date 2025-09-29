@@ -17,6 +17,15 @@ services:
       - rodel-net
     extra_hosts:
       - "host.docker.internal:host-gateway"
+      
+  api-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8002:8000"
+    environment:
+      - ENV=production
 
 networks:
   rodel-net:

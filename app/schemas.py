@@ -1,14 +1,14 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
-from datetime import datetime
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
+from datetime import datetime, date
 from typing import Optional
 
 
 class EspecialistaBase(BaseModel):
-    nombre: str
-    apellido: str
+    nombre: str = Field(..., min_length=2, max_length=100)
+    apellido: str = Field(..., min_length=2, max_length=100)
     email: EmailStr
-    telefono: Optional[str] = None
-    especialidad: Optional[str] = None
+    telefono: str | None = None
+    especialidad: str | None = None
 
 
 class EspecialistaCreate(EspecialistaBase):
@@ -23,12 +23,12 @@ class Especialista(EspecialistaBase):
 
 
 class PacienteBase(BaseModel):
-    nombre: str
-    apellido: str
-    fecha_nacimiento: Optional[datetime] = None
-    sexo: Optional[str] = "Otro"
-    telefono: Optional[str] = None
-    email: Optional[EmailStr] = None
+    nombre: str = Field(..., min_length=2, max_length=100)
+    apellido: str = Field(..., min_length=2, max_length=100)
+    fecha_nacimiento: date
+    sexo: str = Field(..., pattern="^(M|F|Otro)$")
+    telefono: str | None = None
+    email: EmailStr | None = None
 
 
 class PacienteCreate(PacienteBase):
@@ -45,11 +45,11 @@ class Paciente(PacienteBase):
 
 class CitaBase(BaseModel):
     fecha: datetime
-    peso: Optional[float] = None
-    altura: Optional[float] = None
-    imc: Optional[float] = None
-    glucosa: Optional[float] = None
-    observaciones: Optional[str] = None
+    peso: float = Field(..., ge=0, le=500)
+    altura: float = Field(..., ge=0.5, le=2.5)
+    imc: float | None = None
+    glucosa: float | None = Field(None, ge=40, le=400)
+    observaciones: str | None = None
 
 
 class CitaCreate(CitaBase):
@@ -67,7 +67,7 @@ class Cita(CitaBase):
 class ProgresoBase(BaseModel):
     indicador: str
     valor: float
-    unidad: Optional[str] = None
+    unidad: str | None = None
 
 
 class ProgresoCreate(ProgresoBase):
@@ -80,3 +80,48 @@ class Progreso(ProgresoBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class MedicionAntropometricaBase(BaseModel):
+    triceps: float | None = None
+    subescapular: float | None = None
+    suprailiaco: float | None = None
+    pantorrilla: float | None = None
+    diametro_biepicondilar_humero: float | None = None
+    diametro_biepicondilar_femur: float | None = None
+    circunferencia_brazo: float | None = None
+    circunferencia_pantorrilla: float | None = None
+    cintura: float = Field(..., ge=0, description="Circunferencia de cintura en cm, no puede ser negativa")
+    cadera: float = Field(..., ge=0, description="Circunferencia de cadera en cm, no puede ser negativa")
+
+
+class MedicionAntropometricaCreate(MedicionAntropometricaBase):
+    id_cita: int
+
+class MedicionAntropometrica(MedicionAntropometricaBase):
+    id_medicion: int
+    id_cita: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+# --- Composición Corporal ---
+class ComposicionCorporalBase(BaseModel):
+    masa_muscular: float = Field(..., ge=0, description="Masa muscular en kg, no puede ser negativa")
+    masa_grasa: float = Field(..., ge=0, description="Masa grasa en kg, no puede ser negativa")
+    masa_osea: Optional[float] = None
+    masa_residual: Optional[float] = None
+
+
+class ComposicionCorporalCreate(ComposicionCorporalBase):
+    id_cita: int
+
+
+class ComposicionCorporal(ComposicionCorporalBase):
+    id_composicion: int
+    id_cita: int
+    created_at: datetime
+    porcentaje_grasa: float | None = None   # <-- solo para respuesta
+
+    class Config:
+        from_attributes = True

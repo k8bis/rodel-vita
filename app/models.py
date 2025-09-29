@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, Enum, DECIMAL, DateTime, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Date, Enum, DECIMAL, DateTime, ForeignKey, Text, Float, Numeric
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from database import Base
@@ -49,7 +49,7 @@ class Cita(Base):
 
     paciente = relationship("Paciente", back_populates="citas")
     progresos = relationship("Progreso", back_populates="cita", cascade="all, delete")
-
+    mediciones = relationship("MedicionAntropometrica", back_populates="cita", cascade="all, delete-orphan")
 
 class Progreso(Base):
     __tablename__ = "progreso"
@@ -62,3 +62,35 @@ class Progreso(Base):
     created_at = Column(DateTime, server_default=func.now())
 
     cita = relationship("Cita", back_populates="progresos")
+
+class ComposicionCorporal(Base):
+    __tablename__ = "composicion_corporal"
+    id_composicion = Column(Integer, primary_key=True, index=True)
+    id_cita = Column(Integer, ForeignKey("cita.id_cita", ondelete="CASCADE"))
+    
+    masa_grasa = Column(Float)
+    masa_muscular = Column(Float)
+    masa_osea = Column(Float)
+    masa_residual = Column(Float)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())  # 👈 nuevo campo
+
+class MedicionAntropometrica(Base):
+    __tablename__ = "mediciones_antropometricas"
+
+    id_medicion = Column(Integer, primary_key=True, index=True)
+    id_cita = Column(Integer, ForeignKey("cita.id_cita"), nullable=False)
+
+    triceps = Column(Float, nullable=True)
+    subescapular = Column(Float, nullable=True)
+    suprailiaco = Column(Float, nullable=True)
+    pantorrilla = Column(Float, nullable=True)
+    diametro_biepicondilar_humero = Column(Float, nullable=True)
+    diametro_biepicondilar_femur = Column(Float, nullable=True)
+    circunferencia_brazo = Column(Float, nullable=True)
+    circunferencia_pantorrilla = Column(Float, nullable=True)
+    cintura = Column(Float, nullable=True)
+    cadera = Column(Float, nullable=True)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    cita = relationship("Cita", back_populates="mediciones")

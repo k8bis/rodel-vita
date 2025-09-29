@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 import models, schemas, database
 
-router = APIRouter(prefix="/citas", tags=["Citas"])
+router = APIRouter()
 
 @router.post("/", response_model=schemas.Cita)
 def create_cita(request: schemas.CitaCreate, db: Session = Depends(database.get_db)):
