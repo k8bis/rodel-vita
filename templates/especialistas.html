@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <h2>Crear Especialista</h2>
+        <form hx-post="/especialistas/create" hx-target="#alert-container" hx-swap="innerHTML">
+            <div class="mb-3"><input type="text" class="form-control" name="nombre" placeholder="Nombre" required></div>
+            <div class="mb-3"><input type="text" class="form-control" name="apellido" placeholder="Apellido" required></div>
+            <div class="mb-3"><input type="email" class="form-control" name="email" placeholder="Email" required></div>
+            <div class="mb-3"><input type="text" class="form-control" name="telefono" placeholder="Teléfono"></div>
+            <div class="mb-3"><input type="text" class="form-control" name="especialidad" placeholder="Especialidad"></div>
+            <button type="submit" class="btn btn-primary">Crear</button>
+        </form>
+        <div id="alert-container"></div>  <!-- Para mostrar éxito/error -->
+    </div>
+    <div class="col-md-6">
+        <h2>Lista de Especialistas</h2>
+        <div id="table-container">
+            <table class="table table-striped">
+                <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Especialidad</th></tr></thead>
+                <tbody>
+                    {% for espec in especialistas %}
+                    <tr><td>{{ espec.id_especialista }}</td><td>{{ espec.nombre }} {{ espec.apellido }}</td><td>{{ espec.email }}</td><td>{{ espec.especialidad }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    // Opcional: HTMX hook para recargar tabla después de crear
+    document.body.addEventListener('htmx:afterRequest', function(e) {
+        if (e.detail.xhr.status === 200) {
+            e.detail.elt.reset();  // Limpia form
+            htmx.trigger('#table-container', 'load')  // Recarga tabla si agregas hx-get
+        }
+    });
+</script>
+{% endblock %}

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, ConfigDict, Field
+from pydantic import BaseModel, EmailStr, ConfigDict, Field, validator
 from datetime import datetime, date
 from typing import Optional
 
@@ -54,6 +54,12 @@ class CitaBase(BaseModel):
 
 class CitaCreate(CitaBase):
     id_paciente: int
+    
+    @validator('imc', pre=True, always=True)
+    def calculate_imc(cls, v, values):
+        if 'peso' in values and 'altura' in values and values['altura'] > 0:
+            return round(values['peso'] / (values['altura'] ** 2), 2 )
+        return v
 
 
 class Cita(CitaBase):
@@ -102,8 +108,7 @@ class MedicionAntropometrica(MedicionAntropometricaBase):
     id_cita: int
     created_at: datetime
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # --- Composición Corporal ---
 class ComposicionCorporalBase(BaseModel):
@@ -123,5 +128,4 @@ class ComposicionCorporal(ComposicionCorporalBase):
     created_at: datetime
     porcentaje_grasa: float | None = None   # <-- solo para respuesta
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

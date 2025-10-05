@@ -1,5 +1,15 @@
-fastapi
-uvicorn[standard]
-sqlalchemy
-pymysql
-pydantic[email]
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+sqlalchemy==2.0.23
+pymysql==1.1.0
+pydantic[email]==2.5.0
+# Para auth futura (JWT)
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+# Opcionales: para forms/files, tests
+python-multipart==0.0.6
+pytest==7.4.3
+flask==3.0.0
+requests==2.31.0  # Para llamar API
+reportlab==4.0.7
+matplotlib==3.8.2  # Para gráficos en PDF

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Reporte para Paciente ID 1</h2>
+{% if reporte.metricas %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">IMC Promedio</h5>
+                <p class="card-text">{{ reporte.metricas.imc_promedio }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Peso Inicial</h5>
+                <p class="card-text">{{ reporte.metricas.peso_inicial }} kg</p>
+            </div>
+        </div>
+    </div>
+    <!-- Agrega más cards para peso_final, tendencia -->
+</div>
+{% endif %}
+<div class="mt-4">
+    <h3>Citas</h3>
+    {% if reporte.citas %}
+    <table class="table table-striped">
+        <thead><tr><th>Fecha</th><th>Peso</th><th>IMC</th></tr></thead>
+        <tbody>
+            {% for cita in reporte.citas %}
+            <tr><td>{{ cita.fecha }}</td><td>{{ cita.peso }}</td><td>{{ cita.imc }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No hay citas.</p>
+    {% endif %}
+</div>
+{% endblock %}

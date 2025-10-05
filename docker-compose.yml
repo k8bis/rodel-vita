@@ -27,6 +27,16 @@ services:
     environment:
       - ENV=production
 
+  frontend:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    command: python frontend.py
+    depends_on:
+      - api
+
 networks:
   rodel-net:
     driver: bridge

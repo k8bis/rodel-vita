@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends
-from routers import especialista, paciente, cita, progreso, composicion, mediciones
+from routers import especialista, paciente, cita, progreso, composicion, mediciones, reportes
 #from auth import get_current_user
 
 app = FastAPI(title="Rodel-Vita API")
@@ -51,3 +51,11 @@ app.include_router(
 app.include_router(
     mediciones.router, prefix="/mediciones", tags=["Mediciones Antropométricas"]
 )
+app.include_router(
+    reportes.router, prefix="/reportes", tags=["Reportes generales"]
+)
+
+from database import engine, Base
+if __name__ == "__main__":
+    Base.metadata.create_all (bind=engine)
+    print("Tablas creadas/verficadas exitosamente.")

@@ -50,6 +50,7 @@ class Cita(Base):
     paciente = relationship("Paciente", back_populates="citas")
     progresos = relationship("Progreso", back_populates="cita", cascade="all, delete")
     mediciones = relationship("MedicionAntropometrica", back_populates="cita", cascade="all, delete-orphan")
+    composiciones = relationship("ComposicionCorporal", back_populates="cita", cascade="all, delete-orphan")
 
 class Progreso(Base):
     __tablename__ = "progreso"
@@ -65,14 +66,16 @@ class Progreso(Base):
 
 class ComposicionCorporal(Base):
     __tablename__ = "composicion_corporal"
-    id_composicion = Column(Integer, primary_key=True, index=True)
-    id_cita = Column(Integer, ForeignKey("cita.id_cita", ondelete="CASCADE"))
+    id_composicion = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    id_cita = Column(Integer, ForeignKey("cita.id_cita", ondelete="CASCADE"), nullable=False)
     
-    masa_grasa = Column(Float)
-    masa_muscular = Column(Float)
+    masa_grasa = Column(Float, nullable=False)
+    masa_muscular = Column(Float, nullable=False)
     masa_osea = Column(Float)
     masa_residual = Column(Float)
     created_at = Column(DateTime(timezone=True), server_default=func.now())  # 👈 nuevo campo
+    
+    cita = relationship("Cita", back_populates="composiciones")  # Fix: Nueva relationship
 
 class MedicionAntropometrica(Base):
     __tablename__ = "mediciones_antropometricas"
